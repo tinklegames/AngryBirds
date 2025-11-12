@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
 <html>
   <head>
     <title>Angry Birds Chrome</title>
@@ -19,8 +8,7 @@
     <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis:800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/angry_birds_chrome.css" type="text/css">
     <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/aknpkdffaafgjchaibgeefbgmgeghloj">
- <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
     <script type="text/javascript">
       var _gaq = _gaq || [];
@@ -28,150 +16,118 @@
       _gaq.push(['_trackPageview']);
 
       (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        var ga = document.createElement('script'); 
+        ga.type = 'text/javascript'; 
+        ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        var s = document.getElementsByTagName('script')[0]; 
+        s.parentNode.insertBefore(ga, s);
       })();
     </script>
 
     <script>
-        function externalLink(type) {
-            _gaq.push(['_trackEvent', 'Promo', 'Promotional Link: ' + type]);
-        }
+      function externalLink(type) {
+        _gaq.push(['_trackEvent', 'Promo', 'Promotional Link: ' + type]);
+      }
     </script>
 
-    
-      <script type="text/javascript" src="fowl/fowl.nocache.js"></script>
-    
+    <script type="text/javascript" src="fowl/fowl.nocache.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('payments', '1.0', {
-          'packages': [
-          
-            'production_config'
-          
-          ]
+        'packages': ['production_config']
       });
     </script>
-<style>
-  /* Make entire page take up full space */
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background-color: #000; /* black background to match game */
-  }
 
-  /* Remove any table layout limits */
-  .content-table, .content-table tr, .content-table td {
-    height: 100%;
-    width: 100%;
-    border: none;
-    padding: 0;
-    margin: 0;
-  }
+    <style>
+      /* Make entire page take up full space */
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background-color: #000; /* black background to match game */
+      }
 
-  /* Make the game container fill the viewport */
-  #content, #gameDiv, #playn-root {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-  }
+      /* Table layout fixes */
+      .content-table, .content-table tr, .content-table td {
+        height: 100%;
+        width: 100%;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
 
-  /* Hide other elements (like buttons, if unwanted) */
-  .buttons {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-  }
+      /* Main game containers fill full screen */
+      #content, #gameDiv, #playn-root {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
 
-  #loading img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-</style>
+      /* Buttons and overlays */
+      .buttons {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+      }
+
+      #loading img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    </style>
   </head>
+
   <body>
-    
-
-    
-
-    
-      <script type="text/javascript">
-        function getFlashVersion() {
-            try {
-                var version;
-                try {
-                    version = new ActiveXObject("ShockwaveFlash.ShockwaveFlash").GetVariable("$version");
-                } catch (e) {
-                    version = navigator.plugins["Shockwave Flash"].description;
-                }
-                return version.replace(/\D*(\d+).*/g, "$1");
-            } catch (e) {
-                return -1;
-            }
+    <script type="text/javascript">
+      function getFlashVersion() {
+        try {
+          var version;
+          try {
+            version = new ActiveXObject("ShockwaveFlash.ShockwaveFlash").GetVariable("$version");
+          } catch (e) {
+            version = navigator.plugins["Shockwave Flash"].description;
+          }
+          return version.replace(/\D*(\d+).*/g, "$1");
+        } catch (e) {
+          return -1;
         }
+      }
 
-        function haveAudioSupport() {
-          
-            try {
-              if (new AudioContext()) {
-                return true;
-              }
-            } catch (ignore) { }
+      function haveAudioSupport() {
+        try { if (new AudioContext()) return true; } catch (ignore) {}
+        try { if (new webkitAudioContext()) return true; } catch (ignore) {}
+        return getFlashVersion() >= 9.0;
+      }
+    </script>
 
-            try {
-              if (new webkitAudioContext()) {
-                return true;
-              }
-            } catch (ignore) { }
+    <script type="text/javascript">
+      if (!haveAudioSupport()) {
+        url = window.location.href;
+        base = url.match(/[^?#]*/);
+        query = url.match(/\?[^#]*/) || "";
+        hash = url.match(/#.*/);
+        query = query.toString().replace(/[?&]$/, "");
+        query = query ? query + "&" : "?";
+        query += "show=need_flash";
+        url = base + query;
+        if (hash) url += hash;
+        window.location.href = url;
+      }
+    </script>
 
-            return getFlashVersion() >= 9.0;
-          
-        }
-      </script>
-    
-  
-    
-    
-    
-    
-    
-
-      <script type="text/javascript">
-        if (!haveAudioSupport()) {
-          url = window.location.href;
-
-          base = url.match(/[^?#]*/);
-          query = url.match(/\?[^#]*/) || "";
-          hash = url.match(/#.*/);
-
-          query = query.toString().replace(/[?&]$/, "");
-          query = query ? query + "&" : "?";
-          query += "show=need_flash";
-
-          url = base + query;
-          if (hash) url += hash;
-
-          window.location.href = url;
-        }
-      </script>
-
-      
-
-          <table class="content-table">
-            <tr>
-              <td>
-
+    <table class="content-table">
+      <tr>
+        <td>
           <div class="gamecont" id="content">
             <div id='loginInfo'></div>
             
@@ -186,12 +142,10 @@
               <div id="ingameframecontainer"></div>
               <div id="cornerframecontainer1"></div>
             </div>
+
             <div class='buttons'>
               <div class='buttoncontainer'>
-                
                 <div id='version-buttons'></div>
-
-                
                 <script type="text/javascript">
                   installSuccess = function() {
                     document.getElementById("installButton").id = "offlineInstalled";
@@ -208,93 +162,88 @@
                     }
                   }
                 </script>
-                <a id='installButton' href='https://chrome.google.com/webstore/detail/aknpkdffaafgjchaibgeefbgmgeghloj' onclick="attemptInstall(); return false;" onmouseover="tooltip.innerHTML = 'Installing the game allows offline play. Crush pigs wherever you are!'" onmouseout="resetTooltip();"></a>
 
-                
+                <a id='installButton' href='https://chrome.google.com/webstore/detail/aknpkdffaafgjchaibgeefbgmgeghloj'
+                   onclick="attemptInstall(); return false;"
+                   onmouseover="tooltip.innerHTML = 'Installing the game allows offline play. Crush pigs wherever you are!'"
+                   onmouseout="resetTooltip();"></a>
+
                 <a href="#" class="loginButton" id="login"></a>
-                <a href="https://web.archive.org/web/20130710194051/http://www.rovio.com/en/support/faq&support_category_id=36" id="faqButton" onmouseover="tooltip.innerHTML = 'Frequently Asked Questions'" onmouseout="resetTooltip();" onclick="externalLink('FAQ'); window.open('http://www.rovio.com/en/support/faq&support_category_id=36', '_blank'); return false;"></a>
-
+                <a href="https://web.archive.org/web/20130710194051/http://www.rovio.com/en/support/faq&support_category_id=36" 
+                   id="faqButton"
+                   onmouseover="tooltip.innerHTML = 'Frequently Asked Questions'"
+                   onmouseout="resetTooltip();"
+                   onclick="externalLink('FAQ'); window.open('http://www.rovio.com/en/support/faq&support_category_id=36', '_blank'); return false;"></a>
               </div>
-              
-              
+
               <div id='social-container'>
-                <a id="twitterButton" href="https://twitter.com/share" class="twitter-share-button">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-                <iframe id="fb-like-iframe" src="http://www.facebook.com/plugins/like.php?app_id=167680559959348&href=http%3A%2F%2Fwww.facebook.com%2Fangrybirds&send=false&layout=button_count&ref=chrome.angrybirds.com&width=100&show_faces=false&action=like&colorscheme=dark&font&height=25"
-                scrolling="no" frameborder="0" style="visibility: hidden; border:none; overflow:hidden; width:160px; height:25px;" allowTransparency="true"></iframe>
-                <a href="https://www.google.com/chrome" id="optimized" onclick="externalLink('Optimized for Chrome'); window.open('https://www.google.com/chrome', '_blank'); return false;"></a>
+                <a id="twitterButton" href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                <iframe id="fb-like-iframe" 
+                  src="http://www.facebook.com/plugins/like.php?app_id=167680559959348&href=http%3A%2F%2Fwww.facebook.com%2Fangrybirds&send=false&layout=button_count&ref=chrome.angrybirds.com&width=100&show_faces=false&action=like&colorscheme=dark&font&height=25"
+                  scrolling="no" frameborder="0"
+                  style="visibility: hidden; border:none; overflow:hidden; width:160px; height:25px;"
+                  allowTransparency="true"></iframe>
+                <a href="https://www.google.com/chrome" id="optimized" 
+                   onclick="externalLink('Optimized for Chrome'); window.open('https://www.google.com/chrome', '_blank'); return false;"></a>
               </div>
 
-              
               <div id='tooltip'></div>
               <script type="text/javascript">
                 tooltip = document.getElementById('tooltip');
                 resetTooltip = function() { tooltip.innerHTML = ""; }
-             </script>
+              </script>
             </div>
           </div>
+        </td>
+      </tr>
+    </table>
 
-            </td>
-            </td>
-            </tr>
-          </table>
+    <iframe id='appcacheInstaller' style="display: none;"></iframe>
+    <script type="text/javascript">
+      var addIframe = false;
+      if (window.chrome && window.chrome.app && window.chrome.app.isInstalled) {
+        addIframe = true;
+      } else {
+        if (window.applicationCache && window.applicationCache.status == window.applicationCache.IDLE) {
+          var date = new Date();
+          date.setTime(date.getTime() + 60 * 1000);
+          document.cookie = "uninstall=1; expires=" + date.toGMTString() + "; path=/manifest";
+          addIframe = true;
+        }
+      }
+      if (addIframe) {
+        document.getElementById('appcacheInstaller').src = 'http://chrome.angrybirds.com/AppCacheInstaller.html';
+      }
+    </script>
 
-      
-      
-      
-        
-        <iframe id='appcacheInstaller' style="display: none;"></iframe>
-        <script type="text/javascript">
-          var addIframe = false;
-          if (window.chrome && window.chrome.app && window.chrome.app.isInstalled) {
-            addIframe = true;
-          } else {
-            if (window.applicationCache && window.applicationCache.status == window.applicationCache.IDLE) {
-              
-              var date = new Date();
-              date.setTime(date.getTime() + 60 * 1000);
-              document.cookie = "uninstall=1; expires=" + date.toGMTString() + "; path=/manifest";
-              addIframe = true;
-            }
-          }
-          if (addIframe) {
-            document.getElementById('appcacheInstaller').src = 'http://chrome.angrybirds.com/AppCacheInstaller.html';
-          }
-        </script>
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds/appcache.nocache.manifest'></iframe>
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds111/appcache.nocache.manifest'></iframe>
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds112/appcache.nocache.manifest'></iframe>
 
-        
-          
-          <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds/appcache.nocache.manifest'></iframe>
-          <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds111/appcache.nocache.manifest'></iframe>
-          <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds112/appcache.nocache.manifest'></iframe>
-        
-
-      
-
-    
     <noscript>
       <div class="info-noscript">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
+        Your web browser must have JavaScript enabled in order for this application to display correctly.
       </div>
     </noscript>
 
     <script type="text/javascript">
       if (window.self != window.top && window.top.location.host.match("^[a-zA-Z]*\.angrybirds\.com") == null) {
         setInterval(function() {
-                         var content = document.getElementById('content');
-                         content.parentNode.style.display = 'none';
-                         var playn = document.getElementById('playn-root');
-                         if (playn != null) playn.parentNode.removeChild(playn);
-                    }, 500);
+          var content = document.getElementById('content');
+          content.parentNode.style.display = 'none';
+          var playn = document.getElementById('playn-root');
+          if (playn != null) playn.parentNode.removeChild(playn);
+        }, 500);
       }
     </script>
-  <script>
+
+    <script>
       function resizeGame() {
         const gameDiv = document.getElementById('gameDiv');
         gameDiv.style.width = window.innerWidth + 'px';
         gameDiv.style.height = window.innerHeight + 'px';
       }
-
       window.addEventListener('resize', resizeGame);
       window.addEventListener('load', resizeGame);
     </script>
