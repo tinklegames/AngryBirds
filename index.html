@@ -5,32 +5,41 @@
     <meta name="Title" content="Angry Birds Chrome">
     <meta name="description" content="Play Angry Birds online in HD with Google Chrome">
     <meta name="keywords" content="angry birds, free angry birds, online game, play online, angry birds app, chrome, google chrome, web browser, HD, arcade game, online, play angry birds online, web, application, game, iphone, android, ipad, slingshot, catapult, explosions, golden egg, levels, pigs, birds, stars, high scores, chrome os, chrome web store, angry birds rovio, play angry birds on computer, apps for chrome, play angry birds free">
+
     <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis:800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/angry_birds_chrome.css" type="text/css">
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/aknpkdffaafgjchaibgeefbgmgeghloj">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
+    <!-- Google Analytics (kept) -->
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-23082676-1']);
       _gaq.push(['_trackPageview']);
       (function() {
-        var ga = document.createElement('script'); 
-        ga.type = 'text/javascript'; 
-        ga.async = true;
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; 
+        var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
       })();
+    </script>
+
+    <script>
+      function externalLink(type) {
+        _gaq.push(['_trackEvent', 'Promo', 'Promotional Link: ' + type]);
+      }
     </script>
 
     <script type="text/javascript" src="fowl/fowl.nocache.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('payments', '1.0', {
-        'packages': ['production_config']
+          'packages': ['production_config']
       });
     </script>
 
+    <!-- Fullscreen & responsive layout -->
     <style>
       html, body {
         margin: 0;
@@ -41,7 +50,14 @@
         background-color: #000;
       }
 
-      /* Make sure the game covers everything */
+      .content-table, .content-table tr, .content-table td {
+        height: 100%;
+        width: 100%;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+
       #content, #gameDiv, #playn-root {
         position: fixed;
         top: 0;
@@ -53,6 +69,14 @@
         overflow: hidden;
       }
 
+      #playn-root canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
       #loading img {
         width: 100%;
         height: 100%;
@@ -62,6 +86,7 @@
   </head>
 
   <body>
+    <!-- Audio + Flash detection -->
     <script type="text/javascript">
       function getFlashVersion() {
         try {
@@ -78,11 +103,17 @@
       }
 
       function haveAudioSupport() {
-        try { if (new AudioContext()) return true; } catch (ignore) {}
-        try { if (new webkitAudioContext()) return true; } catch (ignore) {}
+        try {
+          if (new AudioContext()) return true;
+        } catch (ignore) {}
+        try {
+          if (new webkitAudioContext()) return true;
+        } catch (ignore) {}
         return getFlashVersion() >= 9.0;
       }
+    </script>
 
+    <script type="text/javascript">
       if (!haveAudioSupport()) {
         url = window.location.href;
         base = url.match(/[^?#]*/);
@@ -97,32 +128,99 @@
       }
     </script>
 
-    <!-- Only the game container -->
-    <div class="gamecont" id="content">
-      <div id="gameDiv">
-        <div id="playn-root">
-          <div id="loading">
-            <img src="images/loading_image_bird.png" />
+    <!-- Main Game Container -->
+    <table class="content-table">
+      <tr>
+        <td>
+          <div class="gamecont" id="content">
+            <div id='loginInfo'></div>
+            <div id='gameDiv'>
+              <div id='playn-root'>
+                <div id="loading">
+                  <img src="images/loading_image_bird.png" />
+                </div>
+              </div>
+              <div id="rovionews"></div>
+              <div id="videochapter"></div>              
+              <div id="ingameframecontainer"></div>
+              <div id="cornerframecontainer1"></div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </td>
+      </tr>
+    </table>
 
-    <script>
-      // Dynamically resize to full screen
-      function resizeGame() {
-        const gameDiv = document.getElementById('gameDiv');
-        gameDiv.style.width = window.innerWidth + 'px';
-        gameDiv.style.height = window.innerHeight + 'px';
+    <!-- Keep original offline install logic -->
+    <iframe id='appcacheInstaller' style="display: none;"></iframe>
+    <script type="text/javascript">
+      var addIframe = false;
+      if (window.chrome && window.chrome.app && window.chrome.app.isInstalled) {
+        addIframe = true;
+      } else {
+        if (window.applicationCache && window.applicationCache.status == window.applicationCache.IDLE) {
+          var date = new Date();
+          date.setTime(date.getTime() + 60 * 1000);
+          document.cookie = "uninstall=1; expires=" + date.toGMTString() + "; path=/manifest";
+          addIframe = true;
+        }
       }
-      window.addEventListener('resize', resizeGame);
-      window.addEventListener('load', resizeGame);
+      if (addIframe) {
+        document.getElementById('appcacheInstaller').src = 'http://chrome.angrybirds.com/AppCacheInstaller.html';
+      }
     </script>
 
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds/appcache.nocache.manifest'></iframe>
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds111/appcache.nocache.manifest'></iframe>
+    <iframe style='display: none;' src='http://chrome.angrybirds.com/AppCacheUninstaller.jsp?path=/angrybirds112/appcache.nocache.manifest'></iframe>
+
     <noscript>
-      <div style="color: white; text-align: center; margin-top: 20%;">
-        Please enable JavaScript to play Angry Birds.
+      <div class="info-noscript">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
       </div>
     </noscript>
+
+    <script type="text/javascript">
+      if (window.self != window.top && window.top.location.host.match("^[a-zA-Z]*\.angrybirds\.com") == null) {
+        setInterval(function() {
+          var content = document.getElementById('content');
+          content.parentNode.style.display = 'none';
+          var playn = document.getElementById('playn-root');
+          if (playn != null) playn.parentNode.removeChild(playn);
+        }, 500);
+      }
+    </script>
+
+    <!-- Responsive canvas resizer -->
+    <script>
+      function resizeGame() {
+        const gameDiv = document.getElementById('gameDiv');
+        const playn = document.getElementById('playn-root');
+        const canvas = playn.querySelector('canvas');
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        gameDiv.style.width = width + 'px';
+        gameDiv.style.height = height + 'px';
+        playn.style.width = width + 'px';
+        playn.style.height = height + 'px';
+
+        if (canvas) {
+          canvas.width = width;
+          canvas.height = height;
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
+        }
+      }
+
+      window.addEventListener('resize', resizeGame);
+      window.addEventListener('load', () => {
+        resizeGame();
+        // Wait for PlayN to inject the canvas
+        const observer = new MutationObserver(resizeGame);
+        observer.observe(document.getElementById('playn-root'), { childList: true, subtree: true });
+      });
+    </script>
   </body>
 </html>
